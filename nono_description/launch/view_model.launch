@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<launch>
+  <param name="use_gui" value="true"/>
+  <arg name="config" default="nono_0" />
+
+  <arg name="urdf_file" default="$(find xacro)/xacro --inorder '$(find nono_description)/urdf/$(arg config).urdf.xacro'" />
+
+  <param name="robot_description" command="$(arg urdf_file)" />
+
+
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <param name="use_gui" value="TRUE"/>
+    <!--<remap from="/joint_states" to="/homere/joint_states" /> -->
+  </node>
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"/>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find nono_description)/rviz/view_model.rviz" />
+
+</launch>

@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="world_name" default="worlds/empty.world"/>
+  <arg name="robot_initial_loc" default="-x 0 -y 0 -z 0.04"/>
+  <arg name="robot_initial_ori" default="-R 0 -P 0 -Y 0"/>
+  <arg name="gui" default="true"/>
+
+  <!-- Load the URDF into the ROS Parameter Server -->
+  <param name="robot_description"
+	 command="$(find xacro)/xacro --inorder '$(find nono_simulator)'/urdf/nono_0_gazebo.urdf" />
+  
+  <!-- gazebo_control launch file -->
+  <rosparam command="load" file="$(find nono_simulator)/config/control.yaml" />
+  <arg name="load_controllers" default="true"/>
+  <group if="$(arg load_controllers)">
+    <node name="base_controller_spawner" pkg="controller_manager" type="spawner"
+	  output="screen" respawn="false" ns="/nono" args="--namespace=/nono nono_joint_publisher nono_diff_drive_controller"/>
+  </group>
+
+  <!-- start gazebo simulation -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(arg world_name)"/>
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="$(arg gui)"/>
+    <arg name="headless" value="false"/>
+    <arg name="debug" value="false"/>
+  </include>
+
+ 
+
+  <!--  spawn the robot in gazebo -->
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+        args="-urdf -model nono -param robot_description $(arg robot_initial_loc) $(arg robot_initial_ori)"/>
+
+  <!--  robot_state_publisher -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+	respawn="false" output="screen">
+    <remap from="/joint_states" to="/nono/joint_states" />
+  </node>
+  
+</launch>

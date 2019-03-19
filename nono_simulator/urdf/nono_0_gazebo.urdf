@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<robot name="nono" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find nono_description)/urdf/nono_0.urdf.xacro" />
+  <xacro:include filename="$(find common_simulations)/urdf/sensors_gazebo.urdf.xacro" />
+  
+  <!-- ros_control plugin -->
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/nono</robotNamespace>
+      <robotParam>robot_description</robotParam>
+      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+      <controlPeriod>0.01</controlPeriod>
+    </plugin>
+  </gazebo>
+
+  <!-- Chassis -->
+  <gazebo reference="chassis_link">
+    <material>Gazebo/PCBGreen</material>
+  </gazebo>
+  
+  <!-- Left Wheel -->
+  <gazebo reference="left_wheel_link">
+    <!--
+    <mu1>100.1</mu1>
+    <mu2>100.1</mu2>
+    <kp>1000000.0</kp>
+    <kd>100.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>0.1</maxVel>
+    <fdir1>1 0 0</fdir1> -->
+    <material>Gazebo/Orange</material>
+  </gazebo>
+
+  <!-- Right Wheel -->
+  <gazebo reference="right_wheel_link">
+    <!--
+    <mu1>100.1</mu1>
+    <mu2>100.1</mu2>
+    <kp>1000000.0</kp>
+    <kd>100.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>0.1</maxVel>
+    <fdir1>1 0 0</fdir1>
+    -->
+    <material>Gazebo/Orange</material>
+  </gazebo>
+
+  <!-- Caster Wheel -->
+  <gazebo reference="caster_ball_link">
+    <material>Gazebo/Blue</material>
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <fdir1>1 0 0</fdir1>
+  </gazebo>
+
+  <gazebo>
+    <plugin name="ground_truth" filename="libgazebo_ros_p3d.so">
+      <frameName>world</frameName>
+      <bodyName>base_link</bodyName>
+      <topicName>nono/base_link_truth</topicName>
+      <updateRate>100.0</updateRate>
+    </plugin>
+  </gazebo>
+
+  <!-- Camera -->
+  <xacro:gazebo_eachine_camera cam_name="camera1"/>
+  
+</robot>

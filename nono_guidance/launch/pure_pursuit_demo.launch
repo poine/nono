@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<launch>
+<arg name="start_gazebo" default="true" />
+  
+  <!--  ****** Gazebo and robot therein *****  -->
+  <group if="$(arg start_gazebo)">
+    <include file="$(find nono_simulator)/launch/empty_world.launch">
+      <arg name="gui" default="true"/>
+      <arg name="robot_initial_loc" default="-x 1.5 -y 3.3 -z 0.02"/>
+    </include>
+  </group>
+
+  <arg name="map" default="$(find rosmip_worlds)/maps/expe_z/track_ethz_cam1_new.yaml" />
+  <arg name="path_filename" default="$(find two_d_guidance)/paths/demo_z/track_ethz_cam1_cw.npz" />
+  <arg name="vel_setpoint" default="0.2" />
+
+   <!--  ****** Maps *****  -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map)" output="screen">
+    <param name="frame_id" value="/map"/>
+  </node>
+  
+  <!--  ****** World to map transform publisher *****  -->
+  <node name="world_to_map_publisher" pkg="tf" type="static_transform_publisher"
+        args="0 0 0  0 0 0 world map 100"/>
+
+  <!--  ****** Navigation Filter *****  -->
+ <include file="$(find nono_guidance)/launch/robot_localization_ekf.launch"/>
+
+ <!--  ****** Pure Pursuit Controller *****  -->
+ <node name="pure_pursuit" pkg="two_d_guidance" type="pp_guidance_node.py" output="screen">
+   <param name="twist_cmd_topic" value="/nono/nono_diff_drive_controller/cmd_vel"/>
+   <param name="robot_pose_topic" value="/nono/base_link_truth"/>
+   <param name="path_filename" value="$(arg path_filename)"/>
+   <param name="vel_setpoint" value="$(arg vel_setpoint)"/>
+   <param name="look_ahead" value="0.3"/>
+ </node>
+
+ <!--  ****** Viz *****  -->
+ <node name="rviz" pkg="rviz" type="rviz" args="-d $(find nono_guidance)/rviz/navigation.rviz" />
+   
+</launch>

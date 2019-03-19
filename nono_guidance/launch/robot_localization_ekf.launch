@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true" output="screen">
+    <rosparam command="load" file="$(find nono_guidance)/config/ekf_gazebo.yaml" />
+
+   <remap from="odometry/filtered" to="nono/ekf/pose"/>
+   <remap from="/cmd_vel" to="/nono/nono_diff_drive_controller/cmd_vel"/>
+  </node>
+</launch>

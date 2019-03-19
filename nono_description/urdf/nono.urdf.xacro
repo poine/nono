@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<robot name="nono" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!--
+      <xacro:property name="high_definition_body_visual" value="true" />
+      <xacro:property name="high_definition_wheel_visual" value="true" />
+  -->
+  
+  <!-- Inertia macros -->
+  <xacro:include filename="$(find common_robots)/urdf/inertias.urdf.xacro" />
+  <material name="yellow"><color rgba="0.8 0.8 0.0 1.0" /></material>
+  <material name="light_grey"><color rgba="0.4 0.4 0.4 1.0" /></material>
+  
+  <!-- Body -->
+  <link name="base_link"></link>
+
+  <link name="chassis_link">
+    <visual>
+      <xacro:if value="${high_definition_body_visual}">
+	<origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+	  <mesh scale="1. 1. 1." filename="package://common_robots/meshes/nono_body.dae"/>
+        </geometry>
+      </xacro:if>
+      <xacro:unless value="${high_definition_body_visual}">
+	<origin xyz="${chassis_x_offset} 0 ${chassis_z_offset}" rpy="0 0 0"/>
+	<geometry><cylinder radius="${chassis_radius}" length="${chassis_height}"/></geometry>
+	<material name="yellow" />
+      </xacro:unless>
+    </visual>
+    <xacro:inertial_cylinder_with_pose mass="${chassis_mass}" radius="${chassis_radius}" height="${chassis_height}">
+        <origin xyz="${chassis_x_offset}  0.00 ${chassis_z_offset}" rpy="0 0 0"/>
+    </xacro:inertial_cylinder_with_pose>
+  </link>
+
+  <joint name="base_link_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="base_link"/>
+    <child link="chassis_link" />
+  </joint>
+   
+  <!-- Wheels -->
+  <xacro:include filename="$(find nono_description)/urdf/wheels.urdf.xacro" />
+
+   
+  <xacro:wheel prefix="left" wheel_radius="${left_wheel_radius}" lr_reflect="1">
+    <origin xyz="0 ${(wheel_track-wheel_width)/2} 0" rpy="0 0 0" />
+  </xacro:wheel>
+  <xacro:wheel prefix="right"  wheel_radius="${right_wheel_radius}" lr_reflect="-1">
+    <origin xyz="0 ${-(wheel_track-wheel_width)/2} 0" rpy="0 0 0" />
+  </xacro:wheel>
+
+  <!-- Caster -->
+  <link name="caster_stand_link">
+    <xacro:unless value="${high_definition_body_visual}">
+      <visual>
+	<origin xyz="${caster_x_offset} 0 ${caster_z_offset}" rpy="0 0 0"/>
+	<geometry><cylinder radius="${caster_radius}" length="${caster_length}"/></geometry>
+	<material name="yellow" />
+      </visual>
+    </xacro:unless> 
+  </link>
+  <joint name="caster_stand_to_chassis_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="chassis_link"/>
+    <child link="caster_stand_link" />
+  </joint>
+
+  <link name="caster_ball_link">
+    <visual>
+      <origin xyz="${caster_x_offset} 0 ${caster_z_offset}" rpy="0 0 0"/>
+      <geometry><sphere radius="${caster_radius}" /></geometry>
+      <material name="light_grey" />
+    </visual>
+    <collision>
+      <origin xyz="${caster_x_offset} 0 ${caster_z_offset}" rpy="0 0 0"/>
+      <geometry><sphere radius="${caster_radius}" /></geometry>
+    </collision>
+  </link>
+  <joint name="caster_stand_to_caster_ball_joint" type="fixed">
+    <origin xyz="0 0 -0.015" rpy="0 0 0" />
+    <parent link="caster_stand_link"/>
+    <child link="caster_ball_link" />
+  </joint>
+
+  <!-- Sensors -->
+  <xacro:include filename="$(find common_robots)/urdf/sensors.urdf.xacro" />
+  <!-- Camera -->
+  <xacro:if value="${use_eachine_camera}">
+    <xacro:property name="cam_look_down_deg" value="25." />
+    <xacro:cs_camera_eachine>
+      <origin xyz="0.04 0 0.03" rpy="0 ${cam_look_down_deg/180*pi}} 0" />
+    </xacro:cs_camera_eachine>
+  </xacro:if>
+  <!-- Infrared Marker -->
+  <xacro:if value="${use_smocap_ir_marker}">
+    <xacro:cs_smocap_ir_marker>
+      <origin xyz="-0.0255 0 0.039" rpy="0 0 0" />
+    </xacro:cs_smocap_ir_marker>
+  </xacro:if>
+  
+</robot>
