@@ -4,10 +4,9 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /Global Options1
-        - /Status1
-        - /RobotModel1
         - /TF1/Frames1
+        - /nono_0_PurePursuit1/goal1
+        - /nono_1_PurePursuit1/goal1
       Splitter Ratio: 0.5
     Tree Height: 373
   - Class: rviz/Selection
@@ -59,6 +58,55 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+        caster_ball_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        caster_stand_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        chassis_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        irm_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_wheel_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_wheel_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+      Name: nono_0
+      Robot Description: nono_0/robot_description
+      TF Prefix: nono_0
+      Update Interval: 0
+      Value: true
+      Visual Enabled: true
+    - Alpha: 1
+      Class: rviz/RobotModel
+      Collision Enabled: false
+      Enabled: true
+      Links:
+        All Links Enabled: true
+        Expand Joint Details: false
+        Expand Link Details: false
+        Expand Tree: false
+        Link Tree Style: Links in Alphabetic Order
+        base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         camera_link:
           Alpha: 1
           Show Axes: false
@@ -93,9 +141,9 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-      Name: RobotModel
-      Robot Description: nono_0/robot_description
-      TF Prefix: nono_0
+      Name: nono_1
+      Robot Description: /nono_1/robot_description
+      TF Prefix: nono_1
       Update Interval: 0
       Value: true
       Visual Enabled: true
@@ -126,99 +174,6 @@ Visualization Manager:
     - Class: rviz/Group
       Displays:
         - Alpha: 1
-          Axes Length: 1
-          Axes Radius: 0.10000000149011612
-          Class: rviz/Pose
-          Color: 255; 25; 0
-          Enabled: true
-          Head Length: 0.10000000149011612
-          Head Radius: 0.05000000074505806
-          Name: goal
-          Shaft Length: 0.20000000298023224
-          Shaft Radius: 0.019999999552965164
-          Shape: Arrow
-          Topic: /move_base/current_goal
-          Unreliable: false
-          Value: true
-        - Alpha: 1
-          Buffer Length: 1
-          Class: rviz/Path
-          Color: 25; 25; 255
-          Enabled: true
-          Head Diameter: 0.30000001192092896
-          Head Length: 0.20000000298023224
-          Length: 0.30000001192092896
-          Line Style: Lines
-          Line Width: 0.029999999329447746
-          Name: global plan
-          Offset:
-            X: 0
-            Y: 0
-            Z: 0
-          Pose Color: 255; 85; 255
-          Pose Style: None
-          Radius: 0.029999999329447746
-          Shaft Diameter: 0.10000000149011612
-          Shaft Length: 0.10000000149011612
-          Topic: /move_base/TrajectoryPlannerROS/global_plan
-          Unreliable: false
-          Value: true
-        - Alpha: 1
-          Buffer Length: 1
-          Class: rviz/Path
-          Color: 25; 255; 0
-          Enabled: true
-          Head Diameter: 0.30000001192092896
-          Head Length: 0.20000000298023224
-          Length: 0.30000001192092896
-          Line Style: Lines
-          Line Width: 0.029999999329447746
-          Name: local_plan
-          Offset:
-            X: 0
-            Y: 0
-            Z: 0
-          Pose Color: 255; 85; 255
-          Pose Style: None
-          Radius: 0.029999999329447746
-          Shaft Diameter: 0.10000000149011612
-          Shaft Length: 0.10000000149011612
-          Topic: /move_base/TrajectoryPlannerROS/local_plan
-          Unreliable: false
-          Value: true
-        - Alpha: 1
-          Class: rviz/Polygon
-          Color: 25; 255; 0
-          Enabled: true
-          Name: local footprint
-          Topic: /move_base/local_costmap/footprint
-          Unreliable: false
-          Value: true
-        - Alpha: 0.699999988079071
-          Class: rviz/Map
-          Color Scheme: costmap
-          Draw Behind: false
-          Enabled: false
-          Name: global costmap
-          Topic: /move_base/global_costmap/costmap
-          Unreliable: false
-          Use Timestamp: false
-          Value: false
-        - Alpha: 0.699999988079071
-          Class: rviz/Map
-          Color Scheme: costmap
-          Draw Behind: false
-          Enabled: false
-          Name: local costmap
-          Topic: /move_base/local_costmap/costmap
-          Unreliable: false
-          Use Timestamp: false
-          Value: false
-      Enabled: true
-      Name: MoveBase
-    - Class: rviz/Group
-      Displays:
-        - Alpha: 1
           Buffer Length: 1
           Class: rviz/Path
           Color: 233; 185; 110
@@ -238,7 +193,7 @@ Visualization Manager:
           Radius: 0.029999999329447746
           Shaft Diameter: 0.10000000149011612
           Shaft Length: 0.10000000149011612
-          Topic: /pure_pursuit/arc
+          Topic: /nono_0/pure_pursuit/arc
           Unreliable: false
           Value: true
         - Alpha: 1
@@ -261,19 +216,77 @@ Visualization Manager:
           Radius: 0.029999999329447746
           Shaft Diameter: 0.10000000149011612
           Shaft Length: 0.10000000149011612
-          Topic: /pure_pursuit/path
+          Topic: /nono_0/pure_pursuit/path
           Unreliable: false
           Value: true
         - Class: rviz/Marker
           Enabled: true
-          Marker Topic: /pure_pursuit/goal
+          Marker Topic: /nono_0/pure_pursuit/goal
           Name: goal
           Namespaces:
-            "": true
+            {}
           Queue Size: 100
           Value: true
-      Enabled: true
-      Name: PurePursuit
+      Enabled: false
+      Name: nono_0_PurePursuit
+    - Class: rviz/Group
+      Displays:
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 233; 185; 110
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Lines
+          Line Width: 0.029999999329447746
+          Name: arc
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /nono_1/pure_pursuit/arc
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz/Path
+          Color: 25; 255; 0
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Lines
+          Line Width: 0.029999999329447746
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic: /nono_1/pure_pursuit/path
+          Unreliable: false
+          Value: true
+        - Class: rviz/Marker
+          Enabled: true
+          Marker Topic: /nono_1/pure_pursuit/goal
+          Name: goal
+          Namespaces:
+            {}
+          Queue Size: 100
+          Value: true
+      Enabled: false
+      Name: nono_1_PurePursuit
     - Class: rviz/Image
       Enabled: true
       Image Topic: /smocap/image_debug
@@ -288,6 +301,22 @@ Visualization Manager:
       Value: true
     - Class: rviz/Group
       Displays:
+        - Alpha: 1
+          Arrow Length: 0.30000001192092896
+          Axes Length: 0.30000001192092896
+          Axes Radius: 0.009999999776482582
+          Class: rviz/PoseArray
+          Color: 255; 25; 0
+          Enabled: false
+          Head Length: 0.07000000029802322
+          Head Radius: 0.029999999329447746
+          Name: markers
+          Shaft Length: 0.23000000417232513
+          Shaft Radius: 0.009999999776482582
+          Shape: Arrow (Flat)
+          Topic: /smocap/est_markers
+          Unreliable: false
+          Value: false
         - Class: rviz/MarkerArray
           Enabled: true
           Marker Topic: /smocap/cams_fov
@@ -319,15 +348,121 @@ Visualization Manager:
           Enabled: true
           Head Length: 0.30000001192092896
           Head Radius: 0.10000000149011612
-          Name: est_marker
+          Name: marker_0
           Shaft Length: 1
           Shaft Radius: 0.05000000074505806
           Shape: Axes
-          Topic: /smocap/est_marker
+          Topic: /smocap/marker_0
+          Unreliable: false
+          Value: true
+        - Alpha: 1
+          Axes Length: 0.05000000074505806
+          Axes Radius: 0.009999999776482582
+          Class: rviz/PoseWithCovariance
+          Color: 255; 25; 0
+          Covariance:
+            Orientation:
+              Alpha: 0.5
+              Color: 255; 255; 127
+              Color Style: Unique
+              Frame: Local
+              Offset: 1
+              Scale: 1
+              Value: true
+            Position:
+              Alpha: 0.30000001192092896
+              Color: 204; 51; 204
+              Scale: 1
+              Value: true
+            Value: false
+          Enabled: true
+          Head Length: 0.30000001192092896
+          Head Radius: 0.10000000149011612
+          Name: marker_1
+          Shaft Length: 1
+          Shaft Radius: 0.05000000074505806
+          Shape: Axes
+          Topic: /smocap/marker_1
           Unreliable: false
           Value: true
       Enabled: true
       Name: Smocap
+    - Class: rviz/Group
+      Displays:
+        - Angle Tolerance: 0.10000000149011612
+          Class: rviz/Odometry
+          Covariance:
+            Orientation:
+              Alpha: 0.5
+              Color: 255; 255; 127
+              Color Style: Unique
+              Frame: Local
+              Offset: 1
+              Scale: 1
+              Value: true
+            Position:
+              Alpha: 0.30000001192092896
+              Color: 204; 51; 204
+              Scale: 1
+              Value: true
+            Value: true
+          Enabled: true
+          Keep: 1
+          Name: pose
+          Position Tolerance: 0.009999999776482582
+          Shape:
+            Alpha: 1
+            Axes Length: 1
+            Axes Radius: 0.10000000149011612
+            Color: 255; 25; 0
+            Head Length: 0.029999999329447746
+            Head Radius: 0.009999999776482582
+            Shaft Length: 0.10000000149011612
+            Shaft Radius: 0.004999999888241291
+            Value: Arrow
+          Topic: /nono_0/ekf/pose
+          Unreliable: false
+          Value: true
+      Enabled: true
+      Name: ekf_nono_0
+    - Class: rviz/Group
+      Displays:
+        - Angle Tolerance: 0.10000000149011612
+          Class: rviz/Odometry
+          Covariance:
+            Orientation:
+              Alpha: 0.5
+              Color: 255; 255; 127
+              Color Style: Unique
+              Frame: Local
+              Offset: 1
+              Scale: 1
+              Value: true
+            Position:
+              Alpha: 0.30000001192092896
+              Color: 204; 51; 204
+              Scale: 1
+              Value: true
+            Value: true
+          Enabled: true
+          Keep: 1
+          Name: pose
+          Position Tolerance: 0.009999999776482582
+          Shape:
+            Alpha: 1
+            Axes Length: 1
+            Axes Radius: 0.10000000149011612
+            Color: 255; 25; 0
+            Head Length: 0.029999999329447746
+            Head Radius: 0.009999999776482582
+            Shaft Length: 0.10000000149011612
+            Shaft Radius: 0.004999999888241291
+            Value: Arrow
+          Topic: /nono_1/ekf/pose
+          Unreliable: false
+          Value: true
+      Enabled: true
+      Name: ekf_nono_1
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -343,25 +478,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/XYOrbit
-      Distance: 7.394195079803467
+      Distance: 3.5841715335845947
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.47861671447753906
-        Y: 2.1766316890716553
-        Z: 4.76837158203125e-7
+        X: 3.260512113571167
+        Y: 2.564814329147339
+        Z: -3.6954879760742188e-6
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5403988361358643
+      Pitch: 0.6097967624664307
       Target Frame: <Fixed Frame>
       Value: XYOrbit (rviz)
-      Yaw: 2.2453925609588623
+      Yaw: 0.750393271446228
     Saved: ~
 Window Geometry:
   Displays:
@@ -379,5 +514,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 2036
-  X: 462
-  Y: 27
+  X: 376
+  Y: 65

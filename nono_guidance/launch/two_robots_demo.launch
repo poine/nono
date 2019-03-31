@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="start_gazebo" default="true"/>
+
+  <group if="$(arg start_gazebo)">
+    <include file="$(find nono_simulator)/launch/two_robots_in_z_room.launch" />
+  </group>
+
+  <arg name="path_filename" default="$(find two_d_guidance)/paths/demo_z/track_ethz_cam1_cw.npz"/>
+  
+  <include file="$(find smocap_gazebo)/launch/demo_gazebo_cfg_z1.launch">	
+    <arg name="start_gazebo" value="false" />
+    <arg name="start_hog_marker" value="false" />
+  </include>
+  
+  <include file="$(find nono_guidance)/launch/pure_pursuit_demo.launch">
+   <arg name="robot_name" value="nono_0" />
+    <arg name="robot_marker" value="1" />
+    <arg name="vel_setpoint" value="0.20" />
+    <arg name="robot_pose_topic" value="/nono_0/ekf/pose" />
+    <arg name="start_gazebo" value="false" />
+    <arg name="path_filename" value="$(arg path_filename)" />
+    <arg name="start_filter" value="true" />
+    <arg name="filter_use_gz_truth" value="false"/>
+    <arg name="start_viz" value="false" />
+  </include>
+
+  <include file="$(find nono_guidance)/launch/pure_pursuit_demo.launch">
+    <arg name="robot_name" value="nono_1" />
+    <arg name="robot_marker" value="0" />
+    <arg name="vel_setpoint" value="0.19" />
+    <arg name="robot_pose_topic" value="/nono_1/ekf/pose" />
+    <arg name="start_gazebo" value="false" />
+    <arg name="start_map" value="false" />
+    <arg name="path_filename" value="$(arg path_filename)" />
+    <arg name="start_filter" value="true" />
+    <arg name="filter_use_gz_truth" value="false"/>
+    <arg name="start_viz" value="false" />
+  </include>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find nono_guidance)/rviz/two_robots_nav.rviz" />
+  
+</launch>

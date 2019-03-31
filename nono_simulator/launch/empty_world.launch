@@ -1,42 +1,57 @@
 <?xml version="1.0"?>
 <launch>
+
+  <arg name="start_gazebo" default="true"/>
   <arg name="world_name" default="worlds/empty.world"/>
+  <arg name="gz_gui" default="true"/>
+
+  <arg name="robot_name" default="nono_0"/>
   <arg name="robot_initial_loc" default="-x 0 -y 0 -z 0.04"/>
   <arg name="robot_initial_ori" default="-R 0 -P 0 -Y 0"/>
-  <arg name="gui" default="true"/>
 
+
+
+  
   <!-- Load the URDF into the ROS Parameter Server -->
-  <param name="robot_description"
-	 command="$(find xacro)/xacro --inorder '$(find nono_simulator)'/urdf/nono_0_gazebo.urdf" />
+  <param name="$(arg robot_name)/robot_description"
+	 command="$(find xacro)/xacro $(find nono_simulator)urdf/nono_gazebo.urdf robot_name:=$(arg robot_name)" />
   
   <!-- gazebo_control launch file -->
-  <rosparam command="load" file="$(find nono_simulator)/config/control.yaml" />
   <arg name="load_controllers" default="true"/>
   <group if="$(arg load_controllers)">
+    <rosparam command="load" file="$(find nono_simulator)/config/control.yaml" ns="$(arg robot_name)"/>
+    <rosparam param="$(arg robot_name)/diff_drive_controller/base_frame_id" subst_value="True">$(arg robot_name)/base_link</rosparam>
+    <rosparam param="$(arg robot_name)/diff_drive_controller/odom_frame_id" subst_value="True">$(arg robot_name)/odom</rosparam>
     <node name="base_controller_spawner" pkg="controller_manager" type="spawner"
-	  output="screen" respawn="false" ns="/nono" args="--namespace=/nono nono_joint_publisher nono_diff_drive_controller"/>
+	  output="screen" respawn="false" ns="$(arg robot_name)" args="joint_publisher diff_drive_controller"/>
   </group>
 
   <!-- start gazebo simulation -->
-  <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(arg world_name)"/>
-    <arg name="paused" value="false"/>
-    <arg name="use_sim_time" value="true"/>
-    <arg name="gui" value="$(arg gui)"/>
-    <arg name="headless" value="false"/>
-    <arg name="debug" value="false"/>
-  </include>
+  <group if="$(arg start_gazebo)">
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+      <arg name="world_name" value="$(arg world_name)"/>
+      <arg name="paused" value="false"/>
+      <arg name="use_sim_time" value="true"/>
+      <arg name="gui" value="$(arg gz_gui)"/>
+      <arg name="headless" value="false"/>
+      <arg name="debug" value="false"/>
+    </include>
+  </group>
 
  
 
   <!--  spawn the robot in gazebo -->
-  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-        args="-urdf -model nono -param robot_description $(arg robot_initial_loc) $(arg robot_initial_ori)"/>
+  <node name="$(arg robot_name)_urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+        args="-urdf -model $(arg robot_name) -param $(arg robot_name)/robot_description $(arg robot_initial_loc) $(arg robot_initial_ori) -robot_namespace $(arg robot_name)"/>
 
-  <!--  robot_state_publisher -->
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
-	respawn="false" output="screen">
-    <remap from="/joint_states" to="/nono/joint_states" />
-  </node>
+  <group if="true">
+    <!--  robot_state_publisher -->
+    <node name="$(arg robot_name)_robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+	  respawn="false" output="screen">
+      <remap from="/joint_states" to="/$(arg robot_name)/joint_states" />
+      <remap from="robot_description" to="$(arg robot_name)/robot_description" />
+      <param name="tf_prefix" value="$(arg robot_name)"/>
+    </node>
+  </group>
   
 </launch>

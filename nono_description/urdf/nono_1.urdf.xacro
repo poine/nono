@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf8"?>
 
 
-<robot name="nono_0" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="nono_1" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <xacro:property name="robot_name" value="nono_0" />
+  <xacro:property name="robot_name" value="nono_1" />
 
   <xacro:property name="use_eachine_camera" value="False" />
   <xacro:property name="use_smocap_ir_marker" value="True" />
-  <xacro:property name="smocap_ir_marker_mesh" value="ir_marker_0.dae" />
+  <xacro:property name="smocap_ir_marker_mesh" value="ir_marker.dae" />
+
   <!-- dimensions -->
 
   <xacro:property name="chassis_radius" value="0.04" />

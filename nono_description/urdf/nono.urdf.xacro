@@ -94,7 +94,7 @@
   </xacro:if>
   <!-- Infrared Marker -->
   <xacro:if value="${use_smocap_ir_marker}">
-    <xacro:cs_smocap_ir_marker>
+    <xacro:cs_smocap_ir_marker mesh="${smocap_ir_marker_mesh}">
       <origin xyz="-0.0255 0 0.039" rpy="0 0 0" />
     </xacro:cs_smocap_ir_marker>
   </xacro:if>

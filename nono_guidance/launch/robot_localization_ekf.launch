@@ -1,9 +1,29 @@
 <?xml version="1.0"?>
 <launch>
-  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true" output="screen">
-    <rosparam command="load" file="$(find nono_guidance)/config/ekf_gazebo.yaml" />
+  <arg name="robot_name" default="nono_0"/>
+  <arg name="robot_marker" default="0"/>
+  <arg name="use_gz_truth" default="false"/>
+  
+  <group if="$(arg use_gz_truth)">
+    <node pkg="robot_localization" type="ekf_localization_node" name="$(arg robot_name)_ekf_se" clear_params="true" output="screen">
+      <rosparam command="load" file="$(find nono_guidance)/config/ekf_gazebo.yaml" />
+      <rosparam param="base_link_frame" subst_value="True">$(arg robot_name)/base_link</rosparam>
+      <rosparam param="odom_frame" subst_value="True">$(arg robot_name)/odom</rosparam>
+      <rosparam param="odom1" subst_value="True">$(arg robot_name)/base_link_truth</rosparam>
+      <remap from="odometry/filtered" to="$(arg robot_name)/ekf/pose"/>
+      <remap from="/cmd_vel" to="/$(arg robot_name)/diff_drive_controller/cmd_vel"/>
+    </node>
+  </group>
 
-   <remap from="odometry/filtered" to="nono/ekf/pose"/>
-   <remap from="/cmd_vel" to="/nono/nono_diff_drive_controller/cmd_vel"/>
-  </node>
+  <group unless="$(arg use_gz_truth)">
+    <node pkg="robot_localization" type="ekf_localization_node" name="$(arg robot_name)_ekf_se" clear_params="true" output="screen">
+      <rosparam command="load" file="$(find nono_guidance)/config/ekf_smocap.yaml" />
+      <rosparam param="base_link_frame" subst_value="True">$(arg robot_name)/base_link</rosparam>
+      <rosparam param="odom_frame" subst_value="True">$(arg robot_name)/odom</rosparam>
+      <rosparam param="pose0" subst_value="True">/smocap/marker_$(arg robot_marker)</rosparam>
+      <remap from="odometry/filtered" to="$(arg robot_name)/ekf/pose"/>
+      <remap from="/cmd_vel" to="/$(arg robot_name)/diff_drive_controller/cmd_vel"/>
+    </node>
+  </group>
+  
 </launch>

@@ -1,13 +1,15 @@
 <?xml version="1.0"?>
-<robot name="nono" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="$(arg robot_name)" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <xacro:include filename="$(find nono_description)/urdf/nono_0.urdf.xacro" />
+  <xacro:arg name="robot_name" default="nono_0"/>
+  
+  <xacro:include filename="$(find nono_description)/urdf/$(arg robot_name).urdf.xacro" />
   <xacro:include filename="$(find common_simulations)/urdf/sensors_gazebo.urdf.xacro" />
   
   <!-- ros_control plugin -->
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-      <robotNamespace>/nono</robotNamespace>
+      <robotNamespace>$(arg robot_name)</robotNamespace>
       <robotParam>robot_description</robotParam>
       <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
       <controlPeriod>0.01</controlPeriod>
@@ -58,7 +60,7 @@
     <plugin name="ground_truth" filename="libgazebo_ros_p3d.so">
       <frameName>world</frameName>
       <bodyName>base_link</bodyName>
-      <topicName>nono/base_link_truth</topicName>
+      <topicName>base_link_truth</topicName>
       <updateRate>100.0</updateRate>
     </plugin>
   </gazebo>

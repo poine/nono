@@ -1,41 +1,73 @@
 <?xml version="1.0"?>
 <launch>
-<arg name="start_gazebo" default="true" />
+  <arg name="robot_name" default="nono_0" />
+  <arg name="robot_marker" default="0" />
+
+  <arg name="start_gazebo" default="true" />
+  <arg name="start_map" default="true" />
+  <arg name="start_filter" default="true" />
+  <arg name="filter_use_gz_truth" default="true"/>
+  <arg name="start_pp" default="true" />
+  <arg name="start_viz" default="true" />
+
+  <arg name="world_filename" default="$(find common_simulations)/worlds/ethz_cam1.world" />
+  <arg name="map" default="$(find rosmip_worlds)/maps/expe_z/track_ethz_cam1_new.yaml" />
+  <arg name="path_filename" default="$(find two_d_guidance)/paths/demo_z/track_ethz_cam1_cw.npz" />
+  <arg name="vel_setpoint" default="0.2" />
+  <arg name="robot_ref_link" default="$(arg robot_name)/base_link" />
+  <arg name="robot_pose_topic" default="/$(arg robot_name)/base_link_truth" />
   
+
   <!--  ****** Gazebo and robot therein *****  -->
   <group if="$(arg start_gazebo)">
     <include file="$(find nono_simulator)/launch/empty_world.launch">
-      <arg name="gui" default="true"/>
+      <arg name="gz_gui" default="true"/>
+      <arg name="world_name" default="$(arg world_filename)"/>
+      <arg name="robot_name" default="$(arg robot_name)"/>
       <arg name="robot_initial_loc" default="-x 1.5 -y 3.3 -z 0.02"/>
     </include>
   </group>
 
-  <arg name="map" default="$(find rosmip_worlds)/maps/expe_z/track_ethz_cam1_new.yaml" />
-  <arg name="path_filename" default="$(find two_d_guidance)/paths/demo_z/track_ethz_cam1_cw.npz" />
-  <arg name="vel_setpoint" default="0.2" />
 
    <!--  ****** Maps *****  -->
-  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map)" output="screen">
-    <param name="frame_id" value="/map"/>
-  </node>
-  
-  <!--  ****** World to map transform publisher *****  -->
-  <node name="world_to_map_publisher" pkg="tf" type="static_transform_publisher"
-        args="0 0 0  0 0 0 world map 100"/>
-
+   <group if="$(arg start_map)">
+     <node name="map_server" pkg="map_server" type="map_server" args="$(arg map)" output="screen">
+       <param name="frame_id" value="/map"/>
+     </node>
+     <!--  ****** World to map transform publisher *****  -->
+     <node name="world_to_map_publisher" pkg="tf" type="static_transform_publisher"
+           args="0 0 0  0 0 0 world map 100"/>
+   </group>
+ 
   <!--  ****** Navigation Filter *****  -->
- <include file="$(find nono_guidance)/launch/robot_localization_ekf.launch"/>
-
+  <group if="$(arg start_filter)">
+    <include file="$(find nono_guidance)/launch/robot_localization_ekf.launch">
+      <arg name="robot_name"   value="$(arg robot_name)"/>
+      <arg name="robot_marker" value="$(arg robot_marker)"/>
+      <arg name="use_gz_truth" value="$(arg filter_use_gz_truth)" /> 
+    </include>
+  </group>
+  
  <!--  ****** Pure Pursuit Controller *****  -->
- <node name="pure_pursuit" pkg="two_d_guidance" type="pp_guidance_node.py" output="screen">
-   <param name="twist_cmd_topic" value="/nono/nono_diff_drive_controller/cmd_vel"/>
-   <param name="robot_pose_topic" value="/nono/base_link_truth"/>
-   <param name="path_filename" value="$(arg path_filename)"/>
-   <param name="vel_setpoint" value="$(arg vel_setpoint)"/>
-   <param name="look_ahead" value="0.3"/>
- </node>
+ <group if="$(arg start_pp)">
+   <node name="$(arg robot_name)_pure_pursuit" pkg="two_d_guidance" type="pp_guidance_node.py" output="screen">
+     <param name="twist_cmd_topic" value="/$(arg robot_name)/diff_drive_controller/cmd_vel"/>
+     <!--<param name="robot_pose_topic" value="/$(arg robot_name)/base_link_truth"/>-->
+     <param name="robot_pose_topic" value="$(arg robot_pose_topic)"/>-->
+     <param name="path_filename" value="$(arg path_filename)"/>
+     <param name="vel_setpoint" value="$(arg vel_setpoint)"/>
+     <param name="look_ahead" value="0.3"/>
+     <param name="robot_ref_link" value="$(arg robot_ref_link)"/>
 
+     <remap from="/pure_pursuit/path" to="$(arg robot_name)/pure_pursuit/path" />
+     <remap from="/pure_pursuit/goal" to="$(arg robot_name)/pure_pursuit/goal" />
+     <remap from="/pure_pursuit/arc" to="$(arg robot_name)/pure_pursuit/arc" />
+   </node>
+ </group>
+ 
  <!--  ****** Viz *****  -->
- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find nono_guidance)/rviz/navigation.rviz" />
-   
+ <group if="$(arg start_viz)">
+   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find nono_guidance)/rviz/navigation.rviz" />
+ </group>
+ 
 </launch>
