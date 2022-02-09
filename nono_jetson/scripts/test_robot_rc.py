@@ -5,33 +5,22 @@ import rospy, sensor_msgs
 from sensor_msgs.msg import Joy
 
 import time, serial, struct
+import nono_jetson.md25 as md25
 
-
-#import odrive
-
-class SerialOdrive:
-    def __init__(self):
-        self.device = '/dev/ttyACM0'
-        self.ser = serial.Serial(port=self.device, baudrate=115200)
-
-    def send(self, m, v):
-        #s = struct.pack('cccc', chr(self.addr), chr(cmd), chr(data), chr(checksum))
-        s = 'v {} {}\r\n'.format(m, v)
-        self.ser.write(s)
-        # request feedback
-        #self.ser.write('f {}\r\n'.format(m))
-        #pos, vel = self.ser.readline().split()
-        #print('m{}: p:{} v:{}'.format(m, pos, vel))
-        
 class Node:
     def __init__(self):
-        self.odrive = SerialOdrive()
-        rospy.init_node('nono_{}'.format('dumb_odrive_test'))
+        self.md25 = md25.MD25()
+        rospy.init_node('nono_{}'.format('nono jetson rc'))
         rospy.Subscriber('/joy', sensor_msgs.msg.Joy, self.joy_callback)
+        self.lin_vel, self.rot_vel = 0, 0
+        self.lmot, self.rmot = 0, 0
 
     def run(self):
         while not rospy.is_shutdown():
-            time.sleep(1)
+            now = rospy.get_rostime()
+            dt = now - last; last = now
+            self.md25.read()
+            #time.sleep(1)
             
          
     def joy_callback(self, msg):
@@ -39,10 +28,11 @@ class Node:
         linear, angular = msg.axes[1], msg.axes[2] 
         #print linear
         kl, ka = 300., -80.
-        self.odrive.send(0, kl*linear  + ka*angular)
-        self.odrive.send(1, -kl*linear + ka*angular)
-
-    
+        #self.odrive.send(0, kl*linear  + ka*angular)
+        #self.odrive.send(1, -kl*linear + ka*angular)
+        self.lin_vel, self.rot_vel = 2*msg.axes[1], msg.axes[2]
+        print(self.lin_vel, self.rot_vel)
+        
 def main():
     n = Node()
     n.run()
