@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="robot_name" default="nono_xl" />
+
+  <node pkg="nono_jetson" type="test_robot_rc.py" name="robot_rc_node" />
+ 
+</launch>
