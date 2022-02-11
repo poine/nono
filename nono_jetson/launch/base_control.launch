@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- Starts the hardware on the real robot -->
+  <arg name="robot_name" default="nono_jetson" />
+
+  <!-- load control configuration -->
+  <rosparam command="load" file="$(find nono_jetson)config/control_$(arg robot_name).yaml" ns="$(arg robot_name)_robot_hardware"/>
+  <!-- load controllers -->
+  <node name="base_controller_spawner" pkg="controller_manager" type="spawner"
+	args="--namespace=/$(arg robot_name)_robot_hardware
+	      joint_publisher
+	      diff_drive_controller"/>
+
+</launch>
+

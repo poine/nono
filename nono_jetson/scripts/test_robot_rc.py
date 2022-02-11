@@ -6,32 +6,37 @@ from sensor_msgs.msg import Joy
 
 import time, serial, struct
 import nono_jetson.md25 as md25
+import common_vision.utils
 
 class Node:
-    def __init__(self):
+    def __init__(self, rate=50):
         self.md25 = md25.MD25()
-        rospy.init_node('nono_{}'.format('nono jetson rc'))
+        rospy.init_node('nono_{}'.format('jetson_rc'))
         rospy.Subscriber('/joy', sensor_msgs.msg.Joy, self.joy_callback)
         self.lin_vel, self.rot_vel = 0, 0
         self.lmot, self.rmot = 0, 0
-
+        self.rate = rospy.Rate(rate)
+        self.sat = 127
+        
     def run(self):
-        while not rospy.is_shutdown():
+         last = rospy.get_rostime() - self.rate.sleep_dur
+         while not rospy.is_shutdown():
             now = rospy.get_rostime()
             dt = now - last; last = now
             self.md25.read()
-            #time.sleep(1)
+            #print(self.md25.enc_l, self.md25.enc_r)
+            self.md25.write(self.lmot, self.rmot)
+
             
+            self.rate.sleep()
          
     def joy_callback(self, msg):
         self.last_input = rospy.get_rostime()
-        linear, angular = msg.axes[1], msg.axes[2] 
-        #print linear
-        kl, ka = 300., -80.
-        #self.odrive.send(0, kl*linear  + ka*angular)
-        #self.odrive.send(1, -kl*linear + ka*angular)
-        self.lin_vel, self.rot_vel = 2*msg.axes[1], msg.axes[2]
-        print(self.lin_vel, self.rot_vel)
+        kl, ka = 30., -15.
+        self.lin_vel, self.rot_vel = msg.axes[1], msg.axes[2]
+        self.lmot = int(np.clip(kl*self.lin_vel + ka*self.rot_vel, -self.sat, self.sat))
+        self.rmot = int(np.clip(kl*self.lin_vel - ka*self.rot_vel, -self.sat, self.sat))
+        #print('{:.1f} {:.1f}'.format(self.lin_vel, self.rot_vel))
         
 def main():
     n = Node()

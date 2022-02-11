@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="robot_name" default="nono_jetson"/>
+  
+  <rosparam command="load" file="$(find nono_jetson)/config/teleop_$(arg robot_name).yaml" />
+  
+  <node pkg="joy" type="joy_node" name="joy_node" />
+
+  <node pkg="teleop_twist_joy" type="teleop_node" name="teleop_twist_joy">
+    <remap from="cmd_vel" to="$(arg robot_name)_robot_hardware/diff_drive_controller/cmd_vel" />
+  </node>
+
+</launch>
